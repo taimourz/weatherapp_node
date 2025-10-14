@@ -53,6 +53,21 @@ app.get('/help' , (req, res) => {
     })
 })
 
+app.get(/^\/help\/(.*)$/, (req, res) => {
+    res.render('404', {
+       error: "Help page not found",
+       name: "taimour"
+    })
+})
+
+app.get(/(.*)$/, (req, res) => {    
+    res.render('404', {
+       error: "Page Not Found" ,
+       name: "taimour afzal"
+    })
+})
+
+
 
 
 app.listen(3000, () => {
