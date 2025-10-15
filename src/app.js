@@ -2,6 +2,8 @@ import path from 'path'
 import express from 'express'
 import hbs from 'hbs'
 import { fileURLToPath } from 'url'
+import { geocode } from "../utils/geocode.js"
+import { forecast } from "../utils/forecast.js"
 
 const app = express()
 
@@ -19,14 +21,57 @@ hbs.registerPartials(partials_dir_path)
 
 
 app.get('/weather', (req, res) => {
-    res.send([
-        {
-            "weather" : "object",
-            "forcast" : "object"
-        }
 
-    ])
+    if(!req.query.address){
+        return res.send({
+            error: "You must give na address"
+        })
+    }
+
+
+    geocode(req.query.address, (error, {latitude, longitude, place_name}) => {
+        if(error){
+            return console.log(error)
+        }
+    
+        forecast({lat: latitude, long: longitude}, (error, forecastData) => {
+            if(error){
+                return console.log(error)
+            }
+
+            res.send([
+                {
+                    "place name" : req.query.address,
+                    "weather" : place_name,
+                    "forcast" : forecastData
+                }
+
+            ])            
+        })
+    })
 })
+
+
+
+
+
+app.get('/products', (req, res) => {
+
+    if(!req.query.search){
+        return res.send({
+            msg: "Please enter a valid string"
+        })
+
+    }
+
+
+    res.send({
+        products: []
+    })
+
+})
+
+
 
 app.get('/' , (req, res) => {
     res.render('index', {
