@@ -29,19 +29,22 @@ app.get('/weather', (req, res) => {
     }
 
 
-    geocode(req.query.address, (error, {latitude, longitude, place_name}) => {
+    geocode(req.query.address, (error, {latitude, longitude, place_name} = {}) => {
         if(error){
-            return console.log(error)
+            return  res.send({
+                "error" : error
+            })
+            // console.log(error)
         }
     
-        forecast({lat: latitude, long: longitude}, (error, forecastData) => {
+        forecast({lat: latitude, long: longitude} = {}, (error, forecastData) => {
             if(error){
                 return console.log(error)
             }
 
             res.send([
                 {
-                    "place name" : req.query.address,
+                    "place_name" : place_name,
                     "weather" : place_name,
                     "forcast" : forecastData
                 }
@@ -55,21 +58,6 @@ app.get('/weather', (req, res) => {
 
 
 
-app.get('/products', (req, res) => {
-
-    if(!req.query.search){
-        return res.send({
-            msg: "Please enter a valid string"
-        })
-
-    }
-
-
-    res.send({
-        products: []
-    })
-
-})
 
 
 
